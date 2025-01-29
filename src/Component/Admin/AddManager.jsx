@@ -79,10 +79,12 @@ const AddManager = () => {
                                     label="Select Department"
                                     value={department}
                                     onChange={(e) => setDepartment(e.target.value)} // Set selected value
-                                >
-                                    <MenuItem value="HR">HR</MenuItem>
-                                    <MenuItem value="IT">IT</MenuItem>
-                                    <MenuItem value="Finance">Finance</MenuItem>
+                                >,,,,
+                                    <MenuItem value="ADMIN">ADMIN</MenuItem>
+                                    <MenuItem value="MANAGMENT">MANAGMENT</MenuItem>
+                                    <MenuItem value="DEVELOPEMENT">DEVELOPEMENT</MenuItem>
+                                    <MenuItem value="TESTER">TESTER</MenuItem>
+                                    <MenuItem value="SECURITY">SECURITY</MenuItem>
                                 </Select>
                             </FormControl>
 

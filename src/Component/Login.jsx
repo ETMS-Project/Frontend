@@ -2,24 +2,43 @@ import sharp from '../assets/sharp.png';
 import log from '../assets/log1.jpg';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRef } from 'react';
+import LoadingBar from 'react-top-loading-bar';
 
 const Login = () => {
 
     const[email,setEmail]=useState("");
-    const[password,setPassword]=useState("");
+    const[password,setPassword]=useState(""); 
+    const loadingBarRef = useRef(null); 
 
-    const onLogin=()=>{
-        if(email==="" || password===""){
-            alert("Please fill all the fields");
-        }else{
-            console.log("Email: ",email);
-            console.log("Password: ",password);
-            console.log("Login Successfull");
+    const onLogin = () => {
+        
+
+        try {
+            if (email === "" || password === "") {
+                toast.error('Please fill all the fields', { position: 'top-left' });
+            } else {
+                if (loadingBarRef.current) loadingBarRef.current.continuousStart(); 
+                console.log("Email:", email);
+                console.log("Password:", password);
+                console.log("Login Successful");
+
+                toast.success('Logged in', { position: 'top-left' });
+
+                setTimeout(() => {
+                    if (loadingBarRef.current) loadingBarRef.current.complete();
+                }, 1000); 
+            }
+        } catch (error) {
+            toast.error('Error in login', { position: 'top-left' });
         }
-    }
+    };
 
     return (
         <>
+           <LoadingBar color="#f11946" height={3} shadow="true" ref={loadingBarRef}  />
             <div style={{ width: "100%", height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", background: "#d4d6ea" }}>
                 <div style={{ display: "flex", width: "70%", maxWidth: "1000px", height: "500px" }}>
                     <div style={{ width: "50%", background: "white" ,display:"grid",alignItems:"center",justifyContent:"center"}}>
