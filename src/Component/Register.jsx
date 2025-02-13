@@ -1,38 +1,52 @@
 import sharp from '../assets/sharp.png';
 import log from '../assets/log1.jpg';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRef } from 'react';
 import LoadingBar from 'react-top-loading-bar';
+import { regiter as registerApi } from '../Services/common' 
+
 
 const Register = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [gender, setGender] = useState("");
+    const [role,setRole]=useState("");
     const [department, setDepartment] = useState("");
-    const[role,setRole]=useState("");
+    const [dob, setDob] = useState("");
     const loadingBarRef = useRef(null);
+    const navigate = useNavigate();
 
-    const onRegister = () => {
-        if (firstName === "" || lastName === "" || email === "" || password === "" || gender === "" || department === "") {
+    const onRegister = async() => {
+        if (firstName === "" || lastName === "" || email === "" || password === "" || dob === "" || department === "" || role === "") {
             toast.error('Please fill all the fields',{position:'top-left'})
         } else {
             if(loadingBarRef.current) loadingBarRef.current.continuousStart();
-            console.log("First Name: ", firstName);
-            console.log("Last Name: ", lastName);
-            console.log("Email: ", email);
-            console.log("Password: ", password);
-            console.log("gender:", gender);
-            console.log("department:", department);
-            console.log("role:", role);
-            toast.success('Registered Successfully',{position:'top-left'})
-            setTimeout(() => {
+            try{
+                const response = await registerApi(firstName, lastName, email, password, role, dob, department);
+                // console.log(    response.d);
+                // console.log("Last Name: ", lastName);
+                // console.log("Email: ", email);
+                // console.log("Password: ", password);
+                // console.log("dob:", dob);
+                // console.log("department:", department);
+                // console.log("role:", role);
+              
+
+
+                toast.success('Registered Successfully',{position:'top-left'})
+                setTimeout(() => {
+                    if (loadingBarRef.current) loadingBarRef.current.complete();
+                    navigate('/');
+                }, 1000);
+            }catch(error){
+                console.error("Registration failed: ", error);
+                toast.error('Registration failed. Please try again.', {position:'top-left'})
                 if (loadingBarRef.current) loadingBarRef.current.complete();
-            }, 1000); 
+            }
+             
         }
     }
     return (
@@ -55,21 +69,14 @@ const Register = () => {
                             <input onChange={(e) => setLastName(e.target.value)} type="text" placeholder="Enter the last name" style={{ width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }} />
 
                             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "6px" }}>
-                                <div>
-                                    <label htmlFor="gender">Select Gender</label>
-                                    <select name="gender" id="gender" value={gender} onChange={(e) => setGender(e.target.value)} style={{ marginTop: "2px", width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }}>
-                                        <option value="">Select Gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Others">Others</option>
-                                    </select>
-                                </div>
-                                <div style={{ marginLeft: "14px" }}>
+                            <input onChange={(e) => setDob(e.target.value)} type="date"  style={{ width: "48%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }} />
+
+                                <div style={{ marginLeft: "14px", width:"48%" }}>
                                     <label htmlFor="department">Select Department</label>
                                     <select name="department" id="department" value={department} onChange={(e) => setDepartment(e.target.value)} style={{ marginTop: "2px", width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }}>
                                         <option value="">Select Department</option>
                                         <option value="ADMIN">ADMIN </option>
-                                        <option value="MANAGMENT">MANAGMENT </option>
+                                        <option value="MANAGMENT">MANAGEMENT </option>
                                         <option value="DEVELOPEMENT">DEVELOPEMENT </option>
                                         <option value="TESTER">TESTER </option>
                                         <option value="SECURITY">SECURITY </option>
